@@ -1,0 +1,13 @@
+trees_number: 200
+test_size: 0.2
+seed: 9
+image_per_class: 80
+
+train_dir_path: './sources/train'
+test_dir_path: './sources/test'
+result_dir_path: './sources/result'
+
+scoring: 'accuracy'
+
+h5_data: './sources/output/data.h5'
+h5_labels: './sources/output/labels.h5'
