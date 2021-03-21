@@ -2,66 +2,48 @@
 # -*- coding: utf-8 -*-
 import pandas
 import matplotlib.pyplot as plt
-import numpy
+
 
 FILE_PATH = "./sources/API_EG.ELC.ACCS.ZS_DS2_en_csv_v2_2056500.csv"
 HEADER_INDEX = 2
 YEARS_COLUMNS_INDEX = 4
 TOP_AMOUNT = 5
 
-# # World data
-# def plot_world():
-#     x = list(map(int, frame.columns.values.tolist()[4:]))  # years
-#     y = frame.iloc[:, 4:].sum().tolist()  # world sum by year
-#     plt.plot(x, y)
-#     plt.xticks(x, x, rotation="vertical")
-#
-#
-# # Top-5 countries data
-# def plot_top():
-#     for idx in (frame.sum(axis=1)).sort_values(ascending=False)[:5].index.tolist():  # top-5 indexes
-#         plt.plot(frame.columns.values.tolist()[4:], frame.iloc[idx, 4:].tolist(), label=frame.iloc[idx, 0])
-#     plt.xticks(rotation="vertical")
-#     plt.legend()
-
-def zero_to_nan(values):
-    """Replace every 0 with 'nan' and return a copy."""
-    return [float('nan') if x==0 else x for x in values]
-
 
 if __name__ == '__main__':
-    # Parsing CSV file and set 0 if NaN
-    data_frame = pandas.read_csv(FILE_PATH, header=HEADER_INDEX).fillna(0)
-    data_frame = data_frame.drop(data_frame.columns[1:YEARS_COLUMNS_INDEX], 1)
+    _, axes = plt.subplots(1, 2)
 
-    world_sum = data_frame.mean(axis='rows', numeric_only=True, skipna=True)
-    world_sum = numpy.trim_zeros(world_sum, trim='fb')
-    world_sum.plot(title='Access to electricity (% of population)').get_figure().show()
-    plt.show()
+    # Parsing CSV file
+    data_frame = pandas.read_csv(FILE_PATH, header=HEADER_INDEX)
+    data_frame = data_frame.rename(data_frame.loc[data_frame.index]['Country Name'])
+    data_frame = data_frame.drop(data_frame.columns[:YEARS_COLUMNS_INDEX], 1)
+    data_frame.dropna(axis='columns', how='all', inplace=True)
+    data_frame.dropna(axis='index', thresh=len(data_frame.columns), inplace=True)
+
+    world_sum = data_frame.mean(axis='rows', numeric_only=True)
+    world_sum.plot(
+        ax=axes[0],
+        xlabel='year',
+        ylabel='%',
+        grid=True,
+        title='Access to electricity (% of population)'
+    )
 
     top_fives_indexes = data_frame.mean(
         axis='columns',
         numeric_only=True,
         skipna=True
-    ).sort_values(ascending=False)[:TOP_AMOUNT].index.tolist()
+    ).sort_values(ascending=False)[:TOP_AMOUNT].index
 
-    print(data_frame)
+    top_fives = data_frame.loc[top_fives_indexes].transpose()
+    top_fives.plot(
+        ax=axes[1],
+        grid=True,
+        xlabel='year',
+        ylabel='%',
+        title='Top 5 countries with access to electricity'
+    )
 
-    for idx in top_fives_indexes:
-        country_name = data_frame.iloc[idx, 0]
-        years = data_frame.columns.values.tolist()[1:]
-        values = data_frame.iloc[idx, 1:].tolist()
-
-        plt.plot(
-            years,
-            zero_to_nan(values),
-            label=country_name,
-            alpha=0.5,
-        )
-        plt.title('TOP 5 Countries with access to electricity (% of population)')
-        plt.legend(loc='best')
-        plt.xticks(rotation="vertical")
-        print(data_frame.iloc[idx, 0])
     plt.show()
 
 
