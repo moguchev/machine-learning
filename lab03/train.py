@@ -60,7 +60,9 @@ def training(h5_data_file: str, h5_labels_file: str, n_estimators: int, random_s
     for name, model in models:
         cv_results = cross_val_score(model, x_train, y_train, cv=10, scoring=scoring, n_jobs=-1)
 
+        # обучение:)
         model.fit(x_train, y_train)
+        # в консольку выводим все данные по точности, полноте и т. д.
         print(classification_report(y_test, model.predict(x_test)))
 
         results.append(cv_results)

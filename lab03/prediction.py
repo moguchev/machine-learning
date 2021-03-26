@@ -24,6 +24,7 @@ def predict(train_data, train_labels, test_path, labels, result_path, n_estimato
     for ind, file in enumerate(glob.glob(test_path + "/*.*")):
         # read the image
         image = cv2.imread(file)
+        # ресайзим все к одному размеру
         image = cv2.resize(image, fixed_size)
 
         # get feature

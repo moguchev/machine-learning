@@ -2,7 +2,7 @@ import cv2
 import mahotas
 import numpy as np
 
-
+# получение фичи из данных картинки
 def get_feature(image):
     fv_hu_moments = fd_hu_moments(image)
     fv_haralick = fd_haralick(image)
@@ -41,27 +41,26 @@ def fd_histogram(image, mask=None):
     return hist.flatten()
 
 
-# детектит ключевые точки
-def fd_kaze(image):
-    try:
-        alg = cv2.KAZE_create()
-        kps = alg.detect(image)
-        kps = sorted(kps, key=lambda x: -x.response)[:4]
-        kps, dsc = alg.compute(image, kps)
-        cv2.normalize(dsc, dsc)
-        dsc = dsc.flatten()
-    except cv2.error as e:
-        print('Error: ', e)
-        return None
-
-    return dsc
-
-
-def fd_fast(image):
-    image = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
-    gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
-    fast = cv2.FastFeatureDetector_create()
-    kp = fast.detect(gray, None)
-    img2 = cv2.drawKeypoints(gray, kp, None, color=(255, 0, 0))
-    cv2.normalize(img2, img2)
-    return img2.flatten()
+# def fd_kaze(image):
+#     try:
+#         alg = cv2.KAZE_create()
+#         kps = alg.detect(image)
+#         kps = sorted(kps, key=lambda x: -x.response)[:4]
+#         kps, dsc = alg.compute(image, kps)
+#         cv2.normalize(dsc, dsc)
+#         dsc = dsc.flatten()
+#     except cv2.error as e:
+#         print('Error: ', e)
+#         return None
+#
+#     return dsc
+#
+#
+# def fd_fast(image):
+#     image = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
+#     gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+#     fast = cv2.FastFeatureDetector_create()
+#     kp = fast.detect(gray, None)
+#     img2 = cv2.drawKeypoints(gray, kp, None, color=(255, 0, 0))
+#     cv2.normalize(img2, img2)
+#     return img2.flatten()

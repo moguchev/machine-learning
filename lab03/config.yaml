@@ -1,13 +1,14 @@
-trees_number: 200
-test_size: 0.2
-seed: 9
-image_per_class: 80
+trees_number: 200 # число деревьев для модели RandomForestClassifier
+test_size: 0.2 # 20% из картинок тестовые при обучении
+seed: 9 # используется как random_state в LogisticRegression DecisionTreeClassifier RandomForestClassifier train_test_split
+image_per_class: 80 # deprecated
 
-train_dir_path: './sources/train'
-test_dir_path: './sources/test'
-result_dir_path: './sources/result'
+train_dir_path: './sources/train' # директория с обучающей выборкой
+test_dir_path: './sources/test' # директория с тестовой выборкой
+result_dir_path: './sources/result'  # директория с результатами классификации покемонов и отчете о моделях
 
-scoring: 'accuracy'
+scoring: 'accuracy' # подсчет аккуратности моделей
 
+# tmp files
 h5_data: './sources/output/data.h5'
 h5_labels: './sources/output/labels.h5'

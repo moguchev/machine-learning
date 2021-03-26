@@ -22,6 +22,7 @@ def save_results(file_path: str, r_names: list, r_results: list):
     plt.savefig(f'{file_path}/result.png')
 
 
+# получаем конфиг либо из аргумента либо дефолтный и отдаем содержимое
 def get_config():
     parser = argparse.ArgumentParser()
     parser.add_argument("-c", "--config", required=False, help="path to config yaml")
@@ -51,6 +52,7 @@ if __name__ == "__main__":
     labels = os.listdir(train_dir)
     labels.sort()
 
+    # парсинг директории с изображениями, создание и сохранение датасетов и лейблов в .h5 файлах
     init_h5py(
         h5_labels_file=h5_labels_file,
         h5_data_file=h5_data_file,
@@ -58,15 +60,17 @@ if __name__ == "__main__":
         train_labels=labels,
     )
 
+    # обучение на разных моделях, выдача результов обучения
     names, results, x_train, y_train = training(
         h5_labels_file=h5_labels_file,
         h5_data_file=h5_data_file,
-        n_estimators=n_estimators,
-        random_state=random_state,
-        test_size=test_size,
-        scoring=scoring,
+        n_estimators=n_estimators,  # для RandomForestClassifier
+        random_state=random_state,  # для LogisticRegression, DecisionTreeClassifier и RandomForestClassifier
+        test_size=test_size,        # сколько использовать для обучения
+        scoring=scoring,            # для подсчета аккуратности модели
     )
-
+    # сохранение отчета работы с разными моделями
     save_results(result_path, names, results)
 
+    # контрольная классификация используя модель RandomForestClassifier
     predict(x_train, y_train, test_dir, labels, result_path, n_estimators, random_state)
